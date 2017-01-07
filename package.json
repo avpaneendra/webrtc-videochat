@@ -1,19 +1,24 @@
 {
-  "name": "timatrue",
+  "name": "WebRTC",
   "version": "0.0.1",
   "description": "WebRTC videochat",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/timatrue/webrtc.git"
-  },
-  "keywords": [
-    "webrtc"
-  ],
-  "author": "webrtc",
-  "license": "MIT",
+  "main": "main.js",
   "dependencies": {
     "express": "^4.14.0",
     "socket.io": "^1.7.2",
-    "static": "^2.0.0",
+    "static": "^2.0.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "webrtc",
+    "heroku"
+  ],
+  "author": "timatrue",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/timatrue/webrtc.git"
   }
 }
