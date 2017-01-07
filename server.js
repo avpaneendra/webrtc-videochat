@@ -12,7 +12,7 @@ io.on('connection', function(socket){
   console.log('a user connected');
 });
 
-http.listen(2017, function(){
+http.listen(process.env.PORT || 2017, function(){
   console.log('listening on *:2017');
 });
 
