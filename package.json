@@ -1,22 +1,19 @@
 {
-  "name": "codelab",
+  "name": "timatrue",
   "version": "0.0.1",
-  "description": "WebRTC codelab",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
+  "description": "WebRTC videochat",
   "repository": {
     "type": "git",
-    "url": "https://bitbucket.org/webrtc/codelab"
+    "url": "https://github.com/timatrue/webrtc.git"
   },
   "keywords": [
-    "webrtc",
-    "codelab"
+    "webrtc"
   ],
   "author": "webrtc",
   "license": "MIT",
   "dependencies": {
-    "static": "^2.0.0"
+    "express": "^4.14.0",
+    "socket.io": "^1.7.2",
+    "static": "^2.0.0",
   }
 }
