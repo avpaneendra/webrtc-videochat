@@ -7,15 +7,58 @@ app.use(express.static('public'));
 app.get('/', function(req, res){
   res.sendFile(__dirname + '/index.html');
 });
+var users = {}; 
 
 io.on('connection', function(socket){
-  console.log('a user connected');
+  //console.log('a user connected', socket);
+  var data;
+    try {
+      data = JSON.parse(socket)
+    } catch (e){
+      console.log('Error parsing socket');
+     data = {};
+    }
+  
+  socket.on('message', function(msg){
+    console.log("user msg: "+ msg);
+
+    switch ( data.type )
+    {
+      case 'login': 
+        console.log('case login');
+        if( users[data.name] ) socket.emit( JSON.stringify({type:'login', success: false}));
+        else socket.emit( JSON.stringify({type:'login', success: true}));
+      break;
+
+      default: 
+        
+        socket.send( {type:'error', message: 'Unreckognised error' + data.type});
+        console.log('case default');
+    }
+  });
+ 
 });
 
 http.listen(process.env.PORT || 2017, function(){
   console.log('listening on *:2017');
 });
 
+
+/*
+
+switch ( data.type )
+    {
+      case 'login': 
+        if( users[data.name] ) connection.send( JSON.stringify({type:'login', success: false}));
+        else connection.send( JSON.stringify({type:'login', success: true}));
+      break;
+
+      default: 
+         connection.send( JSON.stringify({type:'error',
+          message: 'Unreckognised error' + data.type
+        }));
+    }
+*/
 /*
 var static = require('node-static');
 var http = require('http');
