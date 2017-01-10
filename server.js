@@ -11,7 +11,7 @@ app.get('/', function(req, res){
 var users = {}; 
 console.log(typeof tools.isJson);
 io.on('connection', function(socket){
-  //console.log('a user connected', socket);
+  console.log('a user connected', socket.id);
 
   
   socket.on('message', function(msg){
