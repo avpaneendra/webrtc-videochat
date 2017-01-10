@@ -1,0 +1,11 @@
+module.exports = (function() {
+	 function isJson(str) {
+		try {
+			JSON.parse(str);
+		} catch (e) {
+			return false;
+		}
+		return true;
+	}
+	return {"isJson" :isJson }
+})()

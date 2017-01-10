@@ -12,10 +12,10 @@ var message = {
 var videoRemote = document.querySelector('#remote'), videoLocal = document.querySelector('#local'),
 	remoteConnection, localConnection;
 
-var streamUserConstraints = window.devices.mobileDimension();
+var streamUserConstraints = mainrtc.devices.mobileDimension();
 var streaming = false;
 
-if (window.devices.hasUserMedia()){
+if (mainrtc.devices.hasUserMedia()){
 	navigator.getUserMedia = navigator.webkitGetUserMedia
 	|| navigator.mozGetUserMedia || navigator.msGetUserMedia;
 
@@ -25,7 +25,7 @@ if (window.devices.hasUserMedia()){
 		//url of stream
 		//videoLocal.src = URL.createObjectURL(stream);
 		videoLocal.srcObject = stream; 
-		window.devices.hasRTCPeerConnection() ? startPeerConnection(stream) : alert(message.supportRTC);
+		mainrtc.devices.hasRTCPeerConnection() ? startPeerConnection(stream) : alert(message.supportRTC);
 		}, function(err){	console.log(message.supportCapture)});
 
 } else {
@@ -90,7 +90,7 @@ function startPeerConnection(stream){
 
 
 document.querySelector("#capture").addEventListener("click",function(event){
-	if(streaming) window.frontOptions.screenShot();
+	if(streaming) mainrtc.frontOptions.screenShot();
 })
 
 function hasDevices(){

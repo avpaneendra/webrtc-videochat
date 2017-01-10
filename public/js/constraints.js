@@ -1,4 +1,4 @@
-window.devices = (function(){
+window.mainrtc.devices = (function(){
 
 	var streamUserConstraints = {
 		video:true,

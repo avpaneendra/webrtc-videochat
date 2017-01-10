@@ -1,4 +1,4 @@
-window.rtcData = (function(){
+window.mainrtc.rtcData = (function(){
 	function hasRTCPeerConnection(){
 		window.RTCPeerConnection = window.RTCPeerConnection || 
 			window.webkitRTCPeerConnection || 

@@ -10,11 +10,13 @@
 <base target='_blank'>
 
 <title>WebRTC client</title>
+<script src="/mainrtc.js"></script>
 <script src="/js/jquery.js"></script>
 <script src="/js/constraints.js"></script>
 <script src="/js/frontOptions.js"></script>
 <script src="/js/rtcData.js"></script>
 <script src="/js/adapter.js"></script>
+<script src="/js/socketTool.js"></script>
 <script src="/socket.io/socket.io.js"></script>
 
 
@@ -31,19 +33,29 @@
 <button id="capture">Capture</button>
 <script src="/js/main.js"></script>
 <input id="msg" type="text" name="message" placeholder="Message"/>
-<input  id="btnMessage" value="Send" type="submit" onclick="sendInput()">
+<input  id="btnUserA" value="Send A" type="submit" onclick="sendInput(this.id)">
+<input  id="btnUserB" value="Send B" type="submit" onclick="sendInput(this.id)">
+<input  id="btnUserAOffer" value="Send A O" type="submit" onclick="sendInput(this.id)">
+<input  id="btnUserBAnswer" value="Send B A" type="submit" onclick="sendInput(this.id)">
 <script>
 var socket = io.connect();
 
-function sendInput(){
-	var input = document.getElementById("msg").value;
-	var msg = { type: "login", name: "Foo" }
-	//socket.send('message', JSON.stringify(msg));
+function sendInput(id){
+	
+	//var input = document.getElementById("msg").value;
+	var msg;
+	if( id == "btnUserA" ) msg = { type: 'login', name: 'UserA' };
+	if( id == "btnUserB" ) msg = { type: 'login', name: 'UserB' };
+	
 	socket.send(JSON.stringify(msg));
+
 	socket.on('message', function(msg){
-		
-		console.log('message: '+ msg);
+		var json = mainrtc.socketTool.isJson(msg);
+		if(json) console.log('message JSON: '+ msg);
+		else console.log('message not JSON: '+ msg);
 	});
+
+
 }
 
 </script>

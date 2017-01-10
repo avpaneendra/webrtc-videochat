@@ -1,0 +1,1 @@
+window.mainrtc = window.mainrtc || {};

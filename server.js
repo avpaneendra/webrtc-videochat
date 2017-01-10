@@ -2,40 +2,61 @@ var express = require('express');
 var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
+var tools = require('./tools.js');
 
 app.use(express.static('public'));
 app.get('/', function(req, res){
   res.sendFile(__dirname + '/index.html');
 });
 var users = {}; 
-
+console.log(typeof tools.isJson);
 io.on('connection', function(socket){
   //console.log('a user connected', socket);
-  var data;
-    try {
-      data = JSON.parse(socket)
-    } catch (e){
-      console.log('Error parsing socket');
-     data = {};
-    }
+
   
   socket.on('message', function(msg){
     console.log("user msg: "+ msg);
-
+    var data;
+    var json = tools.isJson(msg);
+    if(json) data = JSON.parse(msg);
+    
     switch ( data.type )
     {
       case 'login': 
         console.log('case login');
-        if( users[data.name] ) socket.emit( JSON.stringify({type:'login', success: false}));
-        else socket.emit( JSON.stringify({type:'login', success: true}));
-      break;
+        if( users[data.name] != null) { 
+          socket.send( JSON.stringify({type:'login', success: false}));
+        } else {
+          users[data.name] = socket;
+          socket.name = data.name;
+          socket.send( JSON.stringify({type:'login', success: true}));
+        }
+        break;
+      
+      case 'offer':
+        console.log("Sending offer to", data.name);
+        if( users[data.name] != null) { 
+          socket.calledUser = data.name;
+          socket.send( JSON.stringify({type:'offer', offer: data.offer, name: socket.name}));
+        }
+        break;
+      case 'answer':
+        console.log("Sending answer to", data.name);
+         if( users[data.name] != null) {
+          socket.calledUser = data.name;
+          socket.send( JSON.stringify({type:'answer', answer: data.answer }));
+         }
+        break;
 
       default: 
-        
-        socket.send( {type:'error', message: 'Unreckognised error' + data.type});
+        socket.send( JSON.stringify({type:'error', message: 'Unreckognised error ' + data.type}));
         console.log('case default');
     }
   });
+  socket.on('disconnect',function(msg){
+    if(users[socket]) delete users[socket];
+    console.log('disconnect');
+  })
  
 });
 

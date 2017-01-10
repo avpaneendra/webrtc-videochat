@@ -1,4 +1,4 @@
-window.frontOptions = (function(){
+window.mainrtc.frontOptions = (function(){
 	
 	function screenShot(){
 		var video = document.querySelector("#local"),
@@ -9,5 +9,5 @@ window.frontOptions = (function(){
 		context.drawImage(video,0,0);
 
 	}
-	return {"screenShot": screenShot}
+	return { "screenShot" : screenShot}
 })();
