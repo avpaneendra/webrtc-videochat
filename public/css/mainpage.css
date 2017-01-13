@@ -1,0 +1,22 @@
+.userLogin {
+    display: block;
+    position:  relative;
+    width:100%;
+    margin: 10px;
+}
+.userVideo {
+    display: block;
+    position:  relative;
+    width:100%;
+    margin: 10px;
+}
+.userControl {
+    display: block;
+    position:  relative;
+    width:100%;
+    margin: 10px;
+}
+#remote{
+	width: 150px;
+	height: 150px;
+}

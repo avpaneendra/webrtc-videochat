@@ -89,7 +89,7 @@ function startPeerConnection(stream){
 }
 
 
-document.querySelector("#capture").addEventListener("click",function(event){
+document.querySelector("#userSelfie").addEventListener("click", function(event){
 	if(streaming) mainrtc.frontOptions.screenShot();
 })
 

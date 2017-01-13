@@ -6,7 +6,7 @@
 <meta name='description' content='WebRTC' />
 <link rel="icon" href="favicon.ico" type="image/x-icon"/>
 <meta name='viewport' content='width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1'>
-
+<link rel="stylesheet" type="text/css" href="/css/mainpage.css">
 <base target='_blank'>
 
 <title>WebRTC client</title>
@@ -26,37 +26,69 @@
 </head>
 
 <body>
+<div class="userLogin">
+	<input id="userName" type="text" name="message" placeholder="Your name"/>
+	<input id="userConfirm" type="submit" value="login >>>" onclick="">
+</div>
+<div class="userVideo">
+	<video id = "local" autoplay></video>
+	<video id = "remote" autoplay></video>
+	<canvas height="150" width="150"></canvas>
+</div>
 
-<video id = "remote" autoplay></video>
-<video id = "local" autoplay></video>
-<canvas></canvas>
-<button id="capture">Capture</button>
+
+<div class="userControl">	
+	<input id="userRemoteName" type="text" name="message" placeholder="Call to.."/>
+	<input  id="userCall" value="Call" type="submit" onclick="">
+	<input  id="userHangUp" value="Hang up" type="submit" onclick="">
+	<input id="userSelfie" type="submit" value="Selfie" onclick="">
+</div>
+
 <script src="/js/main.js"></script>
-<input id="msg" type="text" name="message" placeholder="Message"/>
-<input  id="btnUserA" value="Send A" type="submit" onclick="sendInput(this.id)">
-<input  id="btnUserB" value="Send B" type="submit" onclick="sendInput(this.id)">
-<input  id="btnUserAOffer" value="Send A O" type="submit" onclick="sendInput(this.id)">
-<input  id="btnUserBAnswer" value="Send B A" type="submit" onclick="sendInput(this.id)">
-<script>
-var socket = io.connect();
 
-function sendInput(id){
+<script>
+	var msg, connectedUser;
+	var socket = io.connect();
+	var userLoginField = document.getElementById("userName");
+	var userLoginBtn = document.getElementById("userConfirm");
+	//WAIT FOR USER NAME
+	userLoginBtn.addEventListener('click', function(){
+		var userName = userLoginField.value;
+		if(!(userName === "")) send(JSON.stringify({type: "login", name: userName}));
+	});
+	//SEND USER NAME TO SERVER
+	function send(message){
+		if (connectedUser) message.name = connectedUser;
+		socket.send(message);
+	}
 	
-	//var input = document.getElementById("msg").value;
-	var msg;
-	if( id == "btnUserA" ) msg = { type: 'login', name: 'UserA' };
-	if( id == "btnUserB" ) msg = { type: 'login', name: 'UserB' };
-	
-	socket.send(JSON.stringify(msg));
+	//if( id == "btnUserA" ) msg = { type: 'login', name: 'UserA' };
+	//if( id == "btnUserB" ) msg = { type: 'login', name: 'UserB' };
+	//socket.send(JSON.stringify(msg));
 
 	socket.on('message', function(msg){
 		var json = mainrtc.socketTool.isJson(msg);
-		if(json) console.log('message JSON: '+ msg);
-		else console.log('message not JSON: '+ msg);
+		var data;
+		if(json) data = JSON.parse(msg);
+		else data.type = {jsonError:"Json error"};
+
+		switch(data.type){
+			case 'login':
+				onLogin(data);
+				break;
+			default:
+				break;
+		}
+
 	});
-
-
-}
+	function onLogin(data){
+		if(!data.success) {
+			alert("Try new login: "+ data.name);
+		} else {
+			console.log("login success: " + data.name);
+			//startConnection();
+		} 
+	}
 
 </script>
 </body>
