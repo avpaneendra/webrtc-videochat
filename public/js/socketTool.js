@@ -7,5 +7,11 @@ window.mainrtc.socketTool = (function(){
 	    }
 	    return true;
 	}
-	return { "isJson" : isJson}
+	function isInputCorrect(input){
+		if(input === '') return false;
+		return true;
+	}
+	return { "isJson" : isJson,
+			"isInputCorrect" : isInputCorrect
+			}
 })();

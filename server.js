@@ -15,10 +15,13 @@ io.on('connection', function(socket){
 
   
   socket.on('message', function(msg){
-    console.log("user msg: "+ msg);
     var data;
     var json = tools.isJson(msg);
     if(json) data = JSON.parse(msg);
+    else {
+      console.log("message not JSON: "+ msg);
+      data = {};
+    }
 
     switch ( data.type )
     {
@@ -31,24 +34,28 @@ io.on('connection', function(socket){
           socket.name = data.name;
           socket.send( JSON.stringify({type:'login', success: true, name: data.name}));
         }
+        console.log('case login: ' + socket.name);
         break;
       
       case 'offer':
         console.log("Sending offer to", data.name);
         if( users[data.name] != null) { 
           socket.calledUser = data.name;
-          socket.send( JSON.stringify({type:'offer', offer: data.offer, name: socket.name}));
+          socketIsCallee = users[data.name];
+          socketIsCallee.send( JSON.stringify({type:'offer', offer: data.offer, name: socket.name}));
         }
         break;
       case 'answer':
         console.log("Sending answer to", data.name);
          if( users[data.name] != null) {
-          socket.calledUser = data.name;
-          socket.send( JSON.stringify({type:'answer', answer: data.answer }));
+             socket.calledUser = data.name;
+             socketIsCaller = users[data.name];
+             socketIsCaller.send( JSON.stringify({type:'answer', answer: data.answer, name: socket.name }));
          }
         break;
       case 'candidate':
         if(users[data.name] != null){
+          console.log("data.candidate");
           socket.send( JSON.stringify({type:'candidate', candidate: data.candidate }));
           }
         break;
@@ -61,17 +68,13 @@ io.on('connection', function(socket){
         break;
       default: 
         socket.send( JSON.stringify({type:'error', message: 'Unreckognised error ' + data.type}));
-        console.log('case default');
+        console.log('case default error');
     }
 
   });
   socket.on('disconnect',function(){
-    var userDisconnect = socket.id + ", ";
-    if(socket.name != null)  {
-      userDisconnect += socket.name;
-      delete users[socket.name];
-    }
-    console.log('client disconnect: ' + userDisconnect);
+    if(socket.name != null) delete users[socket.name];
+    console.log('client disconnect: ' + socket.id + "_" + socket.name);
   });
  
 });

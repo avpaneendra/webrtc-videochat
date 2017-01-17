@@ -10,25 +10,21 @@
 <base target='_blank'>
 
 <title>WebRTC client</title>
-<script src="/mainrtc.js"></script>
-<script src="/js/jquery.js"></script>
-<script src="/js/constraints.js"></script>
-<script src="/js/frontOptions.js"></script>
-<script src="/js/rtcData.js"></script>
-<script src="/js/adapter.js"></script>
-<script src="/js/socketTool.js"></script>
-<script src="/socket.io/socket.io.js"></script>
-
-
-
-<!-- <link rel='stylesheet' href='css/main.css' /> -->
+	<script src="/mainrtc.js"></script>
+	<script src="/js/jquery.js"></script>
+	<script src="/js/constraints.js"></script>
+	<script src="/js/frontOptions.js"></script>
+	<script src="/js/rtcData.js"></script>
+	<script src="/js/adapter.js"></script>
+	<script src="/js/socketTool.js"></script>
+	<script src="/socket.io/socket.io.js"></script>
 
 </head>
 
 <body>
 <div class="userLogin">
-	<input id="userName" type="text" name="message" placeholder="Your name"/>
-	<input id="userConfirm" type="submit" value="login >>>" onclick="">
+	<input id="userLoginInput" type="text" name="message" placeholder="Your name"/>
+	<input id="userLoginBtn" type="submit" value="login >>>" onclick="">
 </div>
 <div class="userVideo">
 	<video id = "local" autoplay></video>
@@ -38,34 +34,42 @@
 
 
 <div class="userControl">	
-	<input id="userRemoteName" type="text" name="message" placeholder="Call to.."/>
-	<input  id="userCall" value="Call" type="submit" onclick="">
-	<input  id="userHangUp" value="Hang up" type="submit" onclick="">
-	<input id="userSelfie" type="submit" value="Selfie" onclick="">
+	<input id="userNameRemoteInput" type="text" name="message" placeholder="Call to.."/>
+	<input  id="userCallRemoteBtn" value="Call" type="submit" onclick="">
+	<input  id="userHangUpBtn" value="Hang up" type="submit" onclick="">
+	<input id="userDoSelfieBtn" type="submit" value="Selfie" >
 </div>
 
-<script src="/js/main.js"></script>
+<script src="/js/connectionP2P.js"></script>
 
 <script>
-	var msg, connectedUser;
-	var socket = io.connect();
-	var userLoginField = document.getElementById("userName");
-	var userLoginBtn = document.getElementById("userConfirm");
-	//WAIT FOR USER NAME
+	var socket = io.connect(), connectedUser;
+	var userLoginInput = document.getElementById("userLoginInput"),
+	userLoginBtn = document.getElementById("userLoginBtn"),
+	userNameRemoteInput = document.getElementById("userNameRemoteInput"),
+	userCallRemoteBtn = document.getElementById("userCallRemoteBtn");
+
+	//LISTENERS:
 	userLoginBtn.addEventListener('click', function(){
-		var userName = userLoginField.value;
-		if(!(userName === "")) send(JSON.stringify({type: "login", name: userName}));
+		var userLogin = userLoginInput.value;
+		var inputCorrect = mainrtc.socketTool.isInputCorrect(userLogin);
+		if(inputCorrect) send(JSON.stringify({type: "login", name: userLogin}));
+		else console.log("error user login");
+	});
+	userCallRemoteBtn.addEventListener('click', function(){
+		var userNameRemote = userNameRemoteInput.value;
+		var inputCorrect = mainrtc.socketTool.isInputCorrect(userNameRemote);
+		if(inputCorrect) mainrtc.connectionP2P.startPeerConnection(userNameRemote);
+		else console.log("error remote user name");
+	});
+	document.querySelector("#userDoSelfieBtn").addEventListener("click", function(event){
+		if(streaming) mainrtc.frontOptions.screenShot();
 	});
 	//SEND USER NAME TO SERVER
 	function send(message){
 		if (connectedUser) message.name = connectedUser;
 		socket.send(message);
 	}
-	
-	//if( id == "btnUserA" ) msg = { type: 'login', name: 'UserA' };
-	//if( id == "btnUserB" ) msg = { type: 'login', name: 'UserB' };
-	//socket.send(JSON.stringify(msg));
-
 	socket.on('message', function(msg){
 		var json = mainrtc.socketTool.isJson(msg);
 		var data;
@@ -75,6 +79,15 @@
 		switch(data.type){
 			case 'login':
 				onLogin(data);
+				break;
+			case 'candidate':
+				mainrtc.connectionP2P.onCandidate(data.candidate);
+				break;
+			case 'offer':
+				mainrtc.connectionP2P.onOffer(data.offer, data.name);
+				break;
+			case 'answer':
+				mainrtc.connectionP2P.onAnswer(data.answer, data.name);
 				break;
 			default:
 				break;
@@ -86,9 +99,10 @@
 			alert("Try new login: "+ data.name);
 		} else {
 			console.log("login success: " + data.name);
-			//startConnection();
+			mainrtc.connectionP2P.startConnection();
 		} 
 	}
+
 
 </script>
 </body>
