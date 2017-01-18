@@ -31,8 +31,9 @@
 		<video id = "remote" style="width:40%;" autoplay></video>
 
 	<div id="localWrap">
-		<video id = "local" style="width:20%;" muted autoplay></video>
+		<video id = "local" style="width:20%" muted autoplay></video>
 	</div>
+	<canvas ></canvas>
 </div>
 <div class="userControl">	
 	<input id="userNameRemoteInput" type="text" name="message" placeholder="Call to.."/>
@@ -40,7 +41,7 @@
 	<input  id="userHangUpBtn" value="Hang up" type="submit" onclick="">
 	<input id="userDoSelfieBtn" type="submit" value="Selfie" >
 </div>
-<canvas height="150" width="150"></canvas>
+
 
 <script src="/js/connectionP2P.js"></script>
 
@@ -70,7 +71,7 @@
 		mainrtc.connectionP2P.onLeave();
 	});
 	document.querySelector("#userDoSelfieBtn").addEventListener("click", function(event){
-		if(streaming) mainrtc.frontOptions.screenShot();
+		mainrtc.frontOptions.screenShot();
 	});
 	//SEND USER NAME TO SERVER
 	function send(message){
