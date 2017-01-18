@@ -6,15 +6,16 @@ window.mainrtc.connectionP2P = (function(){
 		supportCapture : "Raised an error when capturing camera"
 	};
 	var videoRemote = document.querySelector('#remote'), videoLocal = document.querySelector('#local'),
-		remoteConnection, localConnection;
+		remoteConnection, localConnection, stream;
 	var streamUserConstraints = mainrtc.devices.mobileDimension(), streaming = false, connectedUser;
 
 	function startConnection(){
 		if (mainrtc.devices.hasUserMedia()){
 			navigator.getUserMedia = navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
 
-			navigator.getUserMedia(streamUserConstraints, function(stream){
+			navigator.getUserMedia(streamUserConstraints, function(myStream){
 				streaming = true;
+				stream = myStream;
 				videoLocal.srcObject = stream;
 				mainrtc.devices.hasRTCPeerConnection() ? setupPeerConnection(stream) : alert(message.supportRTC);
 				}, function(err){	console.log(message.supportCapture)});
@@ -28,12 +29,14 @@ window.mainrtc.connectionP2P = (function(){
 		var configuration = {iceServers:[{"url":"stun:stun.l.google.com:19302"}]};
 
 		//entry point for WEBRTC API (initialize a connection, connect to peers, and attach media stream)
-		localConnection = new webkitRTCPeerConnection(configuration);
+		localConnection = new RTCPeerConnection(configuration);
 
 		//Addstream
 		localConnection.addStream(stream);
 		localConnection.onaddstream = function(event){
+			//videoRemote.srcObject = event.stream;
 			videoRemote.src = window.URL.createObjectURL(event.stream);
+			videoRemote.play();
 		};
 		//Ice Candidate Listener
 		localConnection.onicecandidate = function(event){
@@ -72,12 +75,23 @@ window.mainrtc.connectionP2P = (function(){
 	}
 	function onAnswer(answer){
 		localConnection.setRemoteDescription(new RTCSessionDescription(answer));
+	};
+	function onLeave(){
+		connectedUser = null;
+		videoRemote.src = null;
+		localConnection.close();
+		localConnection.onicecandidate = null;
+		localConnection.onaddstream = null;
+		this.setupPeerConnection(stream);
+		console.log("browser disconnect");
 	}
 	return {"startConnection" : startConnection,
 		"startPeerConnection" : startPeerConnection,
+		"setupPeerConnection" : setupPeerConnection,
 		"onCandidate" : onCandidate,
 		"onOffer" : onOffer,
-		"onAnswer" : onAnswer
+		"onAnswer" : onAnswer,
+		"onLeave" : onLeave
 	};
 })();
 /*

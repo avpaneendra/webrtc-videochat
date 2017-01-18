@@ -11,7 +11,7 @@ window.mainrtc.devices = (function(){
 				{maxHeight:480}
 				]
 		},
-		audio:true
+		audio: true
 	};
 	function hasUserMedia() {
 		return !!(navigator.getUserMedia || navigator.webkitGetUserMedia ||

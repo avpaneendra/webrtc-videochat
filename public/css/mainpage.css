@@ -10,13 +10,14 @@
     width:100%;
     margin: 10px;
 }
+#localWrap {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
 .userControl {
     display: block;
     position:  relative;
     width:100%;
     margin: 10px;
-}
-#local{
-	width: 150px;
-	height: 150px;
 }

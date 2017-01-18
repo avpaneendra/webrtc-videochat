@@ -60,10 +60,12 @@ io.on('connection', function(socket){
           }
         break;
       case 'leave':
-        console.log("disconnected from: " + data.name);
-        users[data.name].calledUser = null;
-        if(users[data.name] != null){
-          socket.send( JSON.stringify({type:'leave'}));
+        console.log("disconnecting from: " + data.name);
+          var disconnectUser = users[data.name].calledUser;
+          disconnectSocket = users[disconnectUser];
+          users[data.name].calledUser = null;
+          if(disconnectSocket != null){
+              disconnectSocket.send( JSON.stringify({type:'leave'}));
           }
         break;
       default: 
