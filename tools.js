@@ -7,5 +7,5 @@ module.exports = (function() {
 		}
 		return true;
 	}
-	return {"isJson" :isJson }
+	return {"isJson" : isJson }
 })()
