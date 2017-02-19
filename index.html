@@ -1,19 +1,17 @@
 <!DOCTYPE html>
 <html>
-<head>
+	<head>
 
-	<meta name='keywords' content ='WebRTC, HTML5, JavaScript' />
-	<meta name='description' content='WebRTC' />
-	<meta name='viewport' content='width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1'>
+		<meta name='keywords' content ='WebRTC, HTML5, JavaScript' />
+		<meta name='description' content='WebRTC' />
+		<meta name='viewport' content='width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1'>
+		<link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+		<link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+		<link rel="stylesheet" type="text/css" href="/css/mainpage.css">
+		<link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/1.0.0/firebaseui.css" />
+		<base target='_blank'>
 
-
-	<link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
-	<link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
-
-	<link rel="stylesheet" type="text/css" href="/css/mainpage.css">
-	<base target='_blank'>
-
-	<title>WebRTC client</title>
+		<title>WebRTC client</title>
 		<script src="/mainrtc.js"></script>
 		<script src="/js/jquery.js"></script>
 		<script src="/js/constraints.js"></script>
@@ -22,10 +20,14 @@
 		<script src="/js/adapter.js"></script>
 		<script src="/js/socketTool.js"></script>
 		<script src="/socket.io/socket.io.js"></script>
-
+		<script src="https://www.gstatic.com/firebasejs/3.6.9/firebase.js"></script>
+		<script src="https://cdn.firebase.com/libs/firebaseui/1.0.0/firebaseui.js"></script>
+		<script src="/js/firebase.js"></script>
+		<script src="/js/firebaseSignIn.js"></script>
 	</head>
 
 	<body>
+		<div id="firebaseui-auth-container"></div>
 		<div class="userLogin">
 			<input id="userLoginInput" type="text" name="message" placeholder="Your name"/>
 			<input id="userLoginBtn" type="submit" value="login >>>" onclick="">
@@ -46,43 +48,20 @@
 			<input id="userDoSelfieBtn" type="submit" value="Selfie" >
 		</div>
 
-
+		<script src="/js/UI.js"></script>
 		<script src="/js/connectionP2P.js"></script>
 
 		<script>
-			var socket = io.connect(), connectedUser, userLogin = {};
-			var userLoginInput = document.getElementById("userLoginInput"),
-			userLoginBtn = document.getElementById("userLoginBtn"),
-			userNameRemoteInput = document.getElementById("userNameRemoteInput"),
-			userCallRemoteBtn = document.getElementById("userCallRemoteBtn");
-			userHangUpBtn = document.getElementById("userHangUpBtn");
 
-			//LISTENERS:
-			userLoginBtn.addEventListener('click', function(){
-				userLogin = userLoginInput.value;
-				var inputCorrect = mainrtc.socketTool.isInputCorrect(userLogin);
-				if(inputCorrect) send(JSON.stringify({type: "login", name: userLogin}));
-				else console.log("error user login");
-			});
-			userCallRemoteBtn.addEventListener('click', function(){
-				var userNameRemote = userNameRemoteInput.value;
-				var inputCorrect = mainrtc.socketTool.isInputCorrect(userNameRemote);
-				if(inputCorrect) mainrtc.connectionP2P.startPeerConnection(userNameRemote);
-				else console.log("error remote user name");
-			});
-			userHangUpBtn.addEventListener('click', function(){
-				send(JSON.stringify({type: "leave", name: userLogin}));
-				mainrtc.connectionP2P.onLeave();
-			});
-			document.querySelector("#userDoSelfieBtn").addEventListener("click", function(event){
-				mainrtc.frontOptions.screenShot();
-			});
-			//SEND USER NAME TO SERVER
+			var socket = io.connect(), connectedUser, userLogin = {};
+			mainrtc.UI.initInterface();
+			socket.on('message', socketEventHandler);
+
 			function send(message){
 				if (connectedUser) message.name = connectedUser;
 				socket.send(message);
 			}
-			socket.on('message', function(msg){
+			function socketEventHandler(msg){
 				var json = mainrtc.socketTool.isJson(msg);
 				var data;
 				if(json) data = JSON.parse(msg);
@@ -108,7 +87,7 @@
 						break;
 				}
 
-			});
+			}
 			function onLogin(data){
 				if(!data.success) {
 					alert("Try new login: "+ data.name);
@@ -117,7 +96,6 @@
 					mainrtc.connectionP2P.startConnection();
 				}
 			}
-
 
 		</script>
 	</body>

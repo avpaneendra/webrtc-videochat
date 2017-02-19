@@ -22,8 +22,7 @@ function start(route, handle){
     app.get('/*',function(req, res){
         var pathname = url.parse(req.url).pathname;
         console.log("Request for " + pathname + " received.");
-        var content = route(handle, pathname);
-        res.send(content);
+        route(handle, pathname, res);
     })
 
     http.listen(process.env.PORT || 2017, function(){

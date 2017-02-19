@@ -94,64 +94,8 @@ window.mainrtc.connectionP2P = (function(){
 		"onLeave" : onLeave
 	};
 })();
-/*
- //remoteConnection = new webkitRTCPeerConnection(configuration);
- remoteConnection.onaddstream = function(event){
- remoteConnection.src = window.URL.createObjectURL(event.stream);
- };
 
- remoteConnection.onicecandidate = function(event){
- if(event.candidate){
- console.log("remote event.candidate: ",event.candidate);
- localConnection.addIceCandidate(new RTCIceCandidate(event.candidate));
- }
- };
- */
-/*
- //Say to WEBRTC we want establish p2p connnection
- // connection.createOffer(offer) == SDP object. Logic of connection on physical level (codecs and etc)
- /*localConnection.createOffer(function(offer){
- console.log(offer);
- localConnecion.setLocalDescription(offer);
- remoteConnection.setRemoteDescription(offer);
 
- //callback for Node
- remoteConnection.createAnswer(function(offer){
- remoteConnection.setLocalDescription(offer);
- localConnection.setRemoteDescription(offer);
- });
- });
-
-//Offer
-localConnection.createOffer().then(function(offer){
-	return localConnection.setLocalDescription(offer);
-}).then(function(){
-	return remoteConnection.setRemoteDescription(localConnection.localDescription)
-}).then(function(){
-	return remoteConnection.createAnswer();
-}).then(function(answer){
-	return remoteConnection.setLocalDescription(answer)
-}).then(function(){
-	return localConnection.setRemoteDescription(remoteConnection.localDescription)
-});
-*/
-
-/*
-function hasDevices(){
-	return !!(navigator.mediaDevices.enumerateDevices || navigator.mediaDevices);
-}
-
-if(hasDevices()){
-	console.log("-->devices Detected");
-	navigator.mediaDevices.enumerateDevices().then(function(devices) {
-		devices.forEach(function(device) {
-			console.log(device.kind + ": " + device.label + ", " + device.deviceId);
-		});
-	})
-} else {
-	console.log("mediaDevices doesn't support")
-}
-*/
 
 
 

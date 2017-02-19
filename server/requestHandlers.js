@@ -1,14 +1,16 @@
 /**
  * Created by artem on 10/02/2017.
  */
-function start(){
+function start(res){
+
     console.log("function start");
-    return "Hello Start";
+    res.send("Hello Start");
 }
 
-function upload(){
+function upload(res){
     console.log("handler load");
-    return "Hello upload";
+    res.send("Hello upload");
+
 }
 exports.start = start;
 exports.upload = upload;
