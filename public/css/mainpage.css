@@ -1,13 +1,17 @@
+body {
+    font-family : 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
 .userLogin {
     display: block;
-    position:  relative;
-    width:100%;
+    position: relative;
+    width: 100%;
     margin: 10px;
 }
 .userVideo {
     display: block;
-    position:  relative;
-    width:100%;
+    position: relative;
+    width: 100%;
     margin: 10px;
 }
 #localWrap {
@@ -17,7 +21,18 @@
 }
 .userControl {
     display: block;
-    position:  relative;
-    width:100%;
+    position: relative;
+    width: 100%;
     margin: 10px;
+}
+/*user auth interface*/
+.auth .google{
+    color: #FFFFFF;
+    background: #3498DB;
+    border-color: #3498DB;
+    border-style: solid;
+}
+.auth .google:hover{
+    background: rgba(52, 152, 219, 0.85);
+    border-color: rgba(52, 152, 219, 0.85);
 }

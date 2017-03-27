@@ -10,7 +10,6 @@ window.mainrtc.UI = (function(){
         self.userNameRemoteInput = document.getElementById("userNameRemoteInput");
         self.userCallRemoteBtn = document.getElementById("userCallRemoteBtn");
         self.userHangUpBtn = document.getElementById("userHangUpBtn");
-        document.querySelector("#userDoSelfieBtn").addEventListener("click", userScreenShotHandler);
         listenersUI.call(this);
     }
 
@@ -18,6 +17,7 @@ window.mainrtc.UI = (function(){
         this.userLoginBtn.addEventListener('click', userLoginHandler.bind(this));
         this.userCallRemoteBtn.addEventListener('click', userCallHandler.bind(this));
         this.userHangUpBtn.addEventListener('click', userHangUpHandler);
+        document.querySelector("#userSelfieBtn").addEventListener("click", userScreenShotHandler.bind(this));
     }
     function userLoginHandler(){
         userLogin = this.userLoginInput.value;
@@ -36,11 +36,21 @@ window.mainrtc.UI = (function(){
         mainrtc.connectionP2P.onLeave();
     }
     function userScreenShotHandler(event){
-        mainrtc.frontOptions.screenShot();
+        this.screenShot();
     }
+    function screenShot(){
+        var video = document.querySelector("#local"),
+            canvas = document.querySelector("canvas");
+        console.log(video.videoHeight  + " " + video.videoWidth);
+        canvas.height = video.videoHeight;
+        canvas.width = video.videoWidth;
 
+        var context = canvas.getContext("2d");
+        context.drawImage(video,0,0);
+    }
     return {
-        'initInterface' : initInterface
+        'initInterface' : initInterface,
+        'screenShot' : screenShot
     }
 
 })();

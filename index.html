@@ -8,26 +8,26 @@
 		<link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
 		<link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
 		<link rel="stylesheet" type="text/css" href="/css/mainpage.css">
-		<link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/1.0.0/firebaseui.css" />
 		<base target='_blank'>
 
 		<title>WebRTC client</title>
 		<script src="/mainrtc.js"></script>
-		<script src="/js/jquery.js"></script>
 		<script src="/js/constraints.js"></script>
-		<script src="/js/frontOptions.js"></script>
-		<script src="/js/rtcData.js"></script>
 		<script src="/js/adapter.js"></script>
 		<script src="/js/socketTool.js"></script>
 		<script src="/socket.io/socket.io.js"></script>
+
 		<script src="https://www.gstatic.com/firebasejs/3.6.9/firebase.js"></script>
-		<script src="https://cdn.firebase.com/libs/firebaseui/1.0.0/firebaseui.js"></script>
 		<script src="/js/firebase.js"></script>
-		<script src="/js/firebaseSignIn.js"></script>
+
+
 	</head>
 
 	<body>
-		<div id="firebaseui-auth-container"></div>
+		<div class="auth">
+				<label id="user_login"></label>
+				<button class="google" id="google_state" onclick="toggleAuth()">Sign In</button>
+		</div>
 		<div class="userLogin">
 			<input id="userLoginInput" type="text" name="message" placeholder="Your name"/>
 			<input id="userLoginBtn" type="submit" value="login >>>" onclick="">
@@ -45,14 +45,38 @@
 			<input id="userNameRemoteInput" type="text" name="message" placeholder="Call to.."/>
 			<input  id="userCallRemoteBtn" value="Call" type="submit" onclick="">
 			<input  id="userHangUpBtn" value="Hang up" type="submit" onclick="">
-			<input id="userDoSelfieBtn" type="submit" value="Selfie" >
+			<input id="userSelfieBtn" type="submit" value="Selfie" >
 		</div>
 
 		<script src="/js/UI.js"></script>
 		<script src="/js/connectionP2P.js"></script>
 
 		<script>
-
+			function toggleAuth(){
+				if(!firebase.auth().currentUser){
+					var provider = new firebase.auth.GoogleAuthProvider();
+					firebase.auth().signInWithPopup(provider).then(function(result) {
+						var token = result.credential.accessToken;
+						var user = result.user;
+						send(JSON.stringify({type: "login", name: user.displayName}));
+						console.log(user.displayName);
+					}).catch(function(error) {
+						console.error(error);
+					});
+				} else {
+					firebase.auth().signOut();
+					console.log("logout",firebase.auth().currentUser.displayName);
+				}
+			}
+			firebase.auth().onAuthStateChanged(function(user) {
+				if (user) {
+					document.getElementById('google_state').textContent = 'Sign Out';
+					document.getElementById('user_login').textContent = user.displayName;
+				} else {
+					document.getElementById('google_state').textContent = 'Sign In';
+					document.getElementById('user_login').textContent = "";
+				}
+			});
 			var socket = io.connect(), connectedUser, userLogin = {};
 			mainrtc.UI.initInterface();
 			socket.on('message', socketEventHandler);
@@ -86,7 +110,6 @@
 					default:
 						break;
 				}
-
 			}
 			function onLogin(data){
 				if(!data.success) {
@@ -96,7 +119,6 @@
 					mainrtc.connectionP2P.startConnection();
 				}
 			}
-
 		</script>
 	</body>
 </html>
