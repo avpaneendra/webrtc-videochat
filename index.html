@@ -27,6 +27,7 @@
 		<div class="auth">
 				<label id="user_login"></label>
 				<button class="google" id="google_state" onclick="toggleAuth()">Sign In</button>
+                <label id="user_state"></label>
 		</div>
 		<div class="userLogin">
 			<input id="userLoginInput" type="text" name="message" placeholder="Your name"/>
@@ -58,20 +59,20 @@
 					firebase.auth().signInWithPopup(provider).then(function(result) {
 						var token = result.credential.accessToken;
 						var user = result.user;
-						send(JSON.stringify({type: "login", name: user.displayName}));
-						console.log(user.displayName);
 					}).catch(function(error) {
 						console.error(error);
 					});
 				} else {
 					firebase.auth().signOut();
-					console.log("logout",firebase.auth().currentUser.displayName);
+					mainrtc.connectionP2P.signOut();
 				}
 			}
 			firebase.auth().onAuthStateChanged(function(user) {
 				if (user) {
 					document.getElementById('google_state').textContent = 'Sign Out';
 					document.getElementById('user_login').textContent = user.displayName;
+					send(JSON.stringify({type: "login", name: user.displayName}));
+					console.log("onAuthStateChanged",user.displayName);
 				} else {
 					document.getElementById('google_state').textContent = 'Sign In';
 					document.getElementById('user_login').textContent = "";
@@ -93,7 +94,9 @@
 
 				switch(data.type){
 					case 'login':
-						onLogin(data);
+						mainrtc.connectionP2P.startConnection();
+						/*Should be refactored*/
+						//onLogin(data);
 						break;
 					case 'candidate':
 						mainrtc.connectionP2P.onCandidate(data.candidate);
@@ -115,7 +118,7 @@
 				if(!data.success) {
 					alert("Try new login: "+ data.name);
 				} else {
-					console.log("login success: " + data.name);
+					console.log("login success, startConnection: " + data.name);
 					mainrtc.connectionP2P.startConnection();
 				}
 			}

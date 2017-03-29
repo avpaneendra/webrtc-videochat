@@ -42,7 +42,6 @@ io.on('connection', function(socket){
         switch ( data.type )
         {
             case 'login':
-                console.log('case login');
                 if( users[data.name] != null) {
                     socket.send( JSON.stringify({type:'login', success: false, name: data.name}));
                 } else {

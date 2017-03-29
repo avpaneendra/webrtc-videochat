@@ -11,12 +11,13 @@ window.mainrtc.connectionP2P = (function(){
 
 	function startConnection(){
 		if (mainrtc.devices.hasUserMedia()){
-			navigator.getUserMedia = navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
 
+			navigator.getUserMedia = navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
 			navigator.getUserMedia(streamUserConstraints, function(myStream){
 				streaming = true;
 				stream = myStream;
 				videoLocal.srcObject = stream;
+				console.log("startConnection", stream);
 				mainrtc.devices.hasRTCPeerConnection() ? setupPeerConnection(stream) : alert(message.supportRTC);
 				}, function(err){	console.log(message.supportCapture)});
 		} else {
@@ -30,9 +31,10 @@ window.mainrtc.connectionP2P = (function(){
 
 		//entry point for WEBRTC API (initialize a connection, connect to peers, and attach media stream)
 		localConnection = new RTCPeerConnection(configuration);
-
+        connectionState();
 		//Addstream
 		localConnection.addStream(stream);
+
 		localConnection.onaddstream = function(event){
 			//videoRemote.srcObject = event.stream;
 			videoRemote.src = window.URL.createObjectURL(event.stream);
@@ -82,16 +84,30 @@ window.mainrtc.connectionP2P = (function(){
 		localConnection.close();
 		localConnection.onicecandidate = null;
 		localConnection.onaddstream = null;
+        /*Setup connection for new call*/
 		this.setupPeerConnection(stream);
 		console.log("browser disconnect");
 	}
+	function signOut(){
+        var iceState = localConnection.iceConnectionState;
+		console.log("iceState!!!",iceState);
+	    if(iceState != "new") this.onLeave();
+		stream.getTracks().forEach(function(track){track.stop()});
+		console.log("sign out", localConnection.signalingState);
+	}
+	function connectionState(){
+	    localConnection.oniceconnectionstatechange = function () {
+	        document.getElementById("user_state").textContent  = localConnection.iceConnectionState;
+        }
+    }
 	return {"startConnection" : startConnection,
 		"startPeerConnection" : startPeerConnection,
 		"setupPeerConnection" : setupPeerConnection,
 		"onCandidate" : onCandidate,
 		"onOffer" : onOffer,
 		"onAnswer" : onAnswer,
-		"onLeave" : onLeave
+		"onLeave" : onLeave,
+		"signOut" : signOut
 	};
 })();
 
