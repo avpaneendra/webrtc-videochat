@@ -35,7 +35,7 @@
 		</div>
 		<div class="userVideo">
 
-				<video id = "remote" style="width:40%;" autoplay></video>
+				<video id="remote" style="width:40%;" autoplay></video>
 
 			<div id="localWrap">
 				<video id = "local" style="width:20%" muted autoplay></video>
@@ -44,8 +44,8 @@
 		</div>
 		<div class="userControl">
 			<input id="userNameRemoteInput" type="text" name="message" placeholder="Call to.."/>
-			<input  id="userCallRemoteBtn" value="Call" type="submit" onclick="">
-			<input  id="userHangUpBtn" value="Hang up" type="submit" onclick="">
+			<input id="userCallRemoteBtn" value="Call" type="submit" onclick="">
+			<input id="userHangUpBtn" value="Hang up" type="submit" onclick="">
 			<input id="userSelfieBtn" type="submit" value="Selfie" >
 		</div>
 
@@ -72,6 +72,7 @@
 					document.getElementById('google_state').textContent = 'Sign Out';
 					document.getElementById('user_login').textContent = user.displayName;
 					send(JSON.stringify({type: "login", name: user.displayName}));
+                    send(JSON.stringify({type: "users"}));
 					console.log("onAuthStateChanged",user.displayName);
 				} else {
 					document.getElementById('google_state').textContent = 'Sign In';
@@ -105,11 +106,14 @@
 						mainrtc.connectionP2P.onOffer(data.offer, data.name);
 						break;
 					case 'answer':
+						/*2 arguments!*/
 						mainrtc.connectionP2P.onAnswer(data.answer, data.name);
 						break;
 					case 'leave':
 						mainrtc.connectionP2P.onLeave();
 						break;
+                    case 'users':
+                        mainrtc.UI.userList(data.list);
 					default:
 						break;
 				}

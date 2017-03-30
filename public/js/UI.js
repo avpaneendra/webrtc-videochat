@@ -31,9 +31,15 @@ window.mainrtc.UI = (function(){
         if(inputCorrect) mainrtc.connectionP2P.startPeerConnection(userNameRemote);
         else console.log("error remote user name");
     }
-    function userHangUpHandler(){
-        send(JSON.stringify({type: "leave", name: userLogin}));
-        mainrtc.connectionP2P.onLeave();
+    function userHangUpHandler(event){
+
+            mainrtc.connectionP2P.onLeave();
+            send(JSON.stringify({type: "leave"}));
+    }
+    function userList(userList){
+        userList.forEach(function(user){
+            console.log(user);
+        })
     }
     function userScreenShotHandler(event){
         this.screenShot();
@@ -50,6 +56,7 @@ window.mainrtc.UI = (function(){
     }
     return {
         'initInterface' : initInterface,
+        'userList' : userList,
         'screenShot' : screenShot
     }
 

@@ -56,7 +56,7 @@ io.on('connection', function(socket){
                 console.log("Sending offer to", data.name);
                 if( users[data.name] != null) {
                   socket.calledUser = data.name;
-                  socketIsCallee = users[data.name];
+                  var socketIsCallee = users[data.name];
                   socketIsCallee.send( JSON.stringify({type:'offer', offer: data.offer, name: socket.name}));
                 }
                 break;
@@ -64,7 +64,7 @@ io.on('connection', function(socket){
                 console.log("Sending answer to", data.name);
                  if( users[data.name] != null) {
                      socket.calledUser = data.name;
-                     socketIsCaller = users[data.name];
+                     var socketIsCaller = users[data.name];
                      socketIsCaller.send( JSON.stringify({type:'answer', answer: data.answer, name: socket.name }));
                  }
                  break;
@@ -75,13 +75,15 @@ io.on('connection', function(socket){
                   }
                 break;
             case 'leave':
-                console.log("disconnecting from: " + data.name);
-                var disconnectUser = users[data.name].calledUser;
-                disconnectSocket = users[disconnectUser];
-                users[data.name].calledUser = null;
+                var disconnectSocket = users[socket.calledUser];
+                console.log(socket.name,socket.calledUser);
                 if(disconnectSocket != null){
                     disconnectSocket.send( JSON.stringify({type:'leave'}));
                 }
+                break;
+            case 'users':
+                var userList = Object.keys(users);
+                socket.send(JSON.stringify({type:'users', list: userList}))
                 break;
             default:
                 socket.send( JSON.stringify({type:'error', message: 'Unreckognised error ' + data.type}));
@@ -90,8 +92,13 @@ io.on('connection', function(socket){
 
   });
   socket.on('disconnect',function(){
+      console.log(users);
       if(socket.name != null) delete users[socket.name];
       console.log('client disconnect: ' + socket.id + "_" + socket.name);
+      var disconnectSocket = users[socket.calledUser];
+      if(disconnectSocket != null){
+          disconnectSocket.send( JSON.stringify({type:'leave'}));
+      }
   });
 
 });

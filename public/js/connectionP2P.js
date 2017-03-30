@@ -31,7 +31,8 @@ window.mainrtc.connectionP2P = (function(){
 
 		//entry point for WEBRTC API (initialize a connection, connect to peers, and attach media stream)
 		localConnection = new RTCPeerConnection(configuration);
-        connectionState();
+        console.log(connectionIceState())
+        connectionIceListener();
 		//Addstream
 		localConnection.addStream(stream);
 
@@ -71,8 +72,8 @@ window.mainrtc.connectionP2P = (function(){
 			console.log("answer: " + answer);
 			localConnection.setLocalDescription(answer);
 			send(JSON.stringify({type: 'answer', answer: answer, name: caller}));
-		}).catch(function(e){
-			console.log(e + " create Offer error");
+		}).catch(function(event){
+			console.log(event + " create Offer error");
 		});
 	}
 	function onAnswer(answer){
@@ -86,19 +87,25 @@ window.mainrtc.connectionP2P = (function(){
 		localConnection.onaddstream = null;
         /*Setup connection for new call*/
 		this.setupPeerConnection(stream);
-		console.log("browser disconnect");
+		console.log("onLeave() ,browser disconnect");
 	}
 	function signOut(){
-        var iceState = localConnection.iceConnectionState;
-		console.log("iceState!!!",iceState);
-	    if(iceState != "new") this.onLeave();
+	    if(connectionIceState() != "new") {
+	        console.log("signOut(), state")
+	        this.onLeave();
+            send(JSON.stringify({type: "leave", name: userLogin}));
+	    }
 		stream.getTracks().forEach(function(track){track.stop()});
-		console.log("sign out", localConnection.signalingState);
+		console.log("signOut(), end", localConnection.signalingState);
 	}
-	function connectionState(){
+	function connectionIceListener(){
 	    localConnection.oniceconnectionstatechange = function () {
 	        document.getElementById("user_state").textContent  = localConnection.iceConnectionState;
         }
+    }
+    function connectionIceState(){
+        return localConnection.iceConnectionState;
+
     }
 	return {"startConnection" : startConnection,
 		"startPeerConnection" : startPeerConnection,
@@ -107,7 +114,8 @@ window.mainrtc.connectionP2P = (function(){
 		"onOffer" : onOffer,
 		"onAnswer" : onAnswer,
 		"onLeave" : onLeave,
-		"signOut" : signOut
+		"signOut" : signOut,
+        "connectionIceState" : connectionIceState
 	};
 })();
 
