@@ -3,7 +3,7 @@ var serviceAccount = {
     "type": process.env.type,
     "project_id": process.env.project_id,
     "private_key_id": process.env.private_key_id,
-    "private_key": process.env.private_key,
+    "private_key": process.env.private_key.replace(/\\n/g, '\n'),
     "client_email": process.env.client_email,
     "client_id": process.env.client_id,
     "auth_uri": process.env.auth_uri,
@@ -11,9 +11,14 @@ var serviceAccount = {
     "auth_provider_x509_cert_url": process.env.auth_provider_x509_cert_url,
     "client_x509_cert_url": process.env.client_x509_cert_url
 
+};
+
+function initAdmin(){
+    admin.initializeApp(
+        {
+            credential:admin.credential.cert(serviceAccount),
+            dataBaseUrl:"https://web-rtc-cfabc.firebaseio.com"
+        });
 }
-admin.initializeApp(
-    {
-        credential:admin.credential.cert(serviceAccount),
-        dataBaseUrl:"https://web-rtc-cfabc.firebaseio.com"
-    });
+
+exports.initAdmin = initAdmin;
