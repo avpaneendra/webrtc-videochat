@@ -6,7 +6,7 @@ var admin = require('./server/admin.js');
 var requestHandler = require('./server/requestHandlers.js');
 
 var handle = {};
-var prodMode = false;
+var prodMode = true;
 handle['/'] = requestHandler.start;
 handle['/start'] = requestHandler.start;
 handle['/upload'] = requestHandler.upload;
