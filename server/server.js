@@ -4,8 +4,10 @@ var http = require('http').createServer(app);
 var tools = require(__dirname + '/../tools.js');
 var io = require('socket.io')(http);
 var url = require('url');
-
+var admin = require('./admin.js');
 var users = {};
+var userMap = new Map();
+
 console.log(typeof tools.isJson);
 
 function start(route, handle){
@@ -23,7 +25,7 @@ function start(route, handle){
         var pathname = url.parse(req.url).pathname;
         console.log("Request for " + pathname + " received.");
         route(handle, pathname, res);
-    })
+    });
 
     http.listen(process.env.PORT || 2017, function(){
     console.log('listening on *:2017');
@@ -42,14 +44,15 @@ io.on('connection', function(socket){
         switch ( data.type )
         {
             case 'login':
+                socket.data = data;
                 if( users[data.name] != null) {
                     socket.send( JSON.stringify({type:'login', success: false, name: data.name}));
                 } else {
-                    users[data.name] = socket;
-                    socket.name = data.name;
+                    userMap.set(socket, {[socket.data.uid]: socket.data.name});
+                    users[socket.data.name] = socket;
                     socket.send( JSON.stringify({type:'login', success: true, name: data.name}));
                 }
-                console.log('case login: ' + socket.name);
+                console.log('case login map size: ', userMap.size);
                 break;
 
             case 'offer':
@@ -76,29 +79,30 @@ io.on('connection', function(socket){
                 break;
             case 'leave':
                 var disconnectSocket = users[socket.calledUser];
-                console.log(socket.name,socket.calledUser);
                 if(disconnectSocket != null){
                     disconnectSocket.send( JSON.stringify({type:'leave'}));
                 }
                 break;
             case 'users':
-                var userList = Object.keys(users);
-                socket.send(JSON.stringify({type:'users', list: userList}))
+                var userList = Array.from(userMap.values());
+                var caller = {[socket.data.uid]: socket.data.name};
+                socket.send(JSON.stringify({type:'users', list: userList, caller: caller }))
                 break;
             default:
                 socket.send( JSON.stringify({type:'error', message: 'Unreckognised error ' + data.type}));
                 console.log('case default error');
         }
-
   });
-  socket.on('disconnect',function(){
-      console.log(users);
-      if(socket.name != null) delete users[socket.name];
-      console.log('client disconnect: ' + socket.id + "_" + socket.name);
+  socket.on('disconnect', function(){
+      if(socket.data.name != null) {
+          var originalSocket = userMap.delete(socket);
+          if(originalSocket) delete users[socket.data.name];
+      }
       var disconnectSocket = users[socket.calledUser];
       if(disconnectSocket != null){
           disconnectSocket.send( JSON.stringify({type:'leave'}));
       }
+      console.log('client disconnect');
   });
 
 });

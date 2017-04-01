@@ -32,12 +32,13 @@ window.mainrtc.UI = (function(){
         else console.log("error remote user name");
     }
     function userHangUpHandler(event){
-
             mainrtc.connectionP2P.onLeave();
             send(JSON.stringify({type: "leave"}));
     }
-    function userList(userList){
-        userList.forEach(function(user){
+    function filterUserList(data){
+        var index = data.list.indexOf(data.caller);
+        data.list.splice(index,1)
+        data.list.forEach(function(user){
             console.log(user);
         })
     }
@@ -56,7 +57,7 @@ window.mainrtc.UI = (function(){
     }
     return {
         'initInterface' : initInterface,
-        'userList' : userList,
+        'filterUserList' : filterUserList,
         'screenShot' : screenShot
     }
 

@@ -33,6 +33,10 @@
 			<input id="userLoginInput" type="text" name="message" placeholder="Your name"/>
 			<input id="userLoginBtn" type="submit" value="login >>>" onclick="">
 		</div>
+        <div class="userList">
+        <ul><li></li></ul>
+        </div>
+
 		<div class="userVideo">
 
 				<video id="remote" style="width:40%;" autoplay></video>
@@ -71,8 +75,7 @@
 				if (user) {
 					document.getElementById('google_state').textContent = 'Sign Out';
 					document.getElementById('user_login').textContent = user.displayName;
-					send(JSON.stringify({type: "login", name: user.displayName}));
-                    send(JSON.stringify({type: "users"}));
+					send(JSON.stringify({type: "login", name: user.displayName, uid: user.uid}));
 					console.log("onAuthStateChanged",user.displayName);
 				} else {
 					document.getElementById('google_state').textContent = 'Sign In';
@@ -96,7 +99,8 @@
 				switch(data.type){
 					case 'login':
 						mainrtc.connectionP2P.startConnection();
-						/*Should be refactored*/
+                        send(JSON.stringify({type: "users"}));
+                        /*Should be refactored*/
 						//onLogin(data);
 						break;
 					case 'candidate':
@@ -113,7 +117,7 @@
 						mainrtc.connectionP2P.onLeave();
 						break;
                     case 'users':
-                        mainrtc.UI.userList(data.list);
+                        mainrtc.UI.filterUserList(data);
 					default:
 						break;
 				}
