@@ -1,24 +1,12 @@
 var admin = require('firebase-admin');
-var serviceDevelopment = require('./web-rtc-cfabc-firebase-adminsdk-dpqoj-ff19ebceff.json');
-
 
 function initAdmin(mode){
-    if(!mode) serviceProduction = {};
-    var serviceAccount = mode ? serviceProduction() : serviceDevelopment;
+    var serviceAccount = mode ? serviceProduction() : serviceDevelopment();
     admin.initializeApp(
         {
             credential:admin.credential.cert(serviceAccount),
             dataBaseUrl:"https://web-rtc-cfabc.firebaseio.com"
         });
-}
-function verifyToken(idToken){
-    admin.auth().verifyIdToken(idToken)
-        .then(function(decodedToken) {
-            var uid = decodedToken.uid;
-            console.log(uid);
-        }).catch(function(error) {
-        // Handle error
-    });
 }
 function serviceProduction(){
     return {
@@ -33,7 +21,19 @@ function serviceProduction(){
         "auth_provider_x509_cert_url": process.env.auth_provider_x509_cert_url,
         "client_x509_cert_url": process.env.client_x509_cert_url
     };
-
+}
+function serviceDevelopment(){
+    var serviceDevelopment = require('./web-rtc-cfabc-firebase-adminsdk-dpqoj-ff19ebceff.json');
+    return serviceDevelopment;
+}
+function verifyToken(idToken){
+    admin.auth().verifyIdToken(idToken)
+        .then(function(decodedToken) {
+            var uid = decodedToken.uid;
+            console.log(uid);
+        }).catch(function(error) {
+        // Handle error
+    });
 }
 exports.initAdmin = initAdmin;
 exports.verifyToken = verifyToken;
