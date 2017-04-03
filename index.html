@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html>
 	<head>
-
 		<meta name='keywords' content ='WebRTC, HTML5, JavaScript' />
 		<meta name='description' content='WebRTC' />
 		<meta name='viewport' content='width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1'>
@@ -26,15 +25,10 @@
 	<body>
 		<div class="auth">
 				<label id="user_login"></label>
-				<button class="google" id="google_state" onclick="toggleAuth()">Sign In</button>
+				<button class="google" id="google_state" onclick="mainrtc.database.toggleAuth()">Sign In</button>
                 <label id="user_state"></label>
 		</div>
-		<div class="userLogin">
-			<input id="userLoginInput" type="text" name="message" placeholder="Your name"/>
-			<input id="userLoginBtn" type="submit" value="login >>>" onclick="">
-		</div>
         <div class="userList">
-        <ul><li></li></ul>
         </div>
 
 		<div class="userVideo">
@@ -57,34 +51,11 @@
 		<script src="/js/connectionP2P.js"></script>
 
 		<script>
-			function toggleAuth(){
-				if(!firebase.auth().currentUser){
-					var provider = new firebase.auth.GoogleAuthProvider();
-					firebase.auth().signInWithPopup(provider).then(function(result) {
-						var token = result.credential.accessToken;
-						var user = result.user;
-					}).catch(function(error) {
-						console.error(error);
-					});
-				} else {
-					firebase.auth().signOut();
-					mainrtc.connectionP2P.signOut();
-				}
-			}
-			firebase.auth().onAuthStateChanged(function(user) {
-				if (user) {
-					document.getElementById('google_state').textContent = 'Sign Out';
-					document.getElementById('user_login').textContent = user.displayName;
-					send(JSON.stringify({type: "login", name: user.displayName, uid: user.uid}));
-					console.log("onAuthStateChanged",user.displayName);
-				} else {
-					document.getElementById('google_state').textContent = 'Sign In';
-					document.getElementById('user_login').textContent = "";
-				}
-			});
-			var socket = io.connect(), connectedUser, userLogin = {};
-			mainrtc.UI.initInterface();
-			socket.on('message', socketEventHandler);
+            var socket = io.connect(), connectedUser, userLogin = {};
+            mainrtc.UI.initInterface();
+            mainrtc.database.initFirebase();
+
+            socket.on('message', socketEventHandler);
 
 			function send(message){
 				if (connectedUser) message.name = connectedUser;
@@ -110,8 +81,7 @@
 						mainrtc.connectionP2P.onOffer(data.offer, data.name);
 						break;
 					case 'answer':
-						/*2 arguments!*/
-						mainrtc.connectionP2P.onAnswer(data.answer, data.name);
+						mainrtc.connectionP2P.onAnswer(data.answer);
 						break;
 					case 'leave':
 						mainrtc.connectionP2P.onLeave();

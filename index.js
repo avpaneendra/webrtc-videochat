@@ -1,4 +1,4 @@
-__rootdir = __dirname
+__rootdir = __dirname;
 
 var server = require('./server/server.js');
 var router = require('./server/router.js');

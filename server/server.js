@@ -52,15 +52,14 @@ io.on('connection', function(socket){
                     users[socket.data.name] = socket;
                     socket.send( JSON.stringify({type:'login', success: true, name: data.name}));
                 }
-                console.log('case login map size: ', userMap.size);
+                //console.log('case login map size: ');
                 break;
-
             case 'offer':
                 console.log("Sending offer to", data.name);
                 if( users[data.name] != null) {
                   socket.calledUser = data.name;
                   var socketIsCallee = users[data.name];
-                  socketIsCallee.send( JSON.stringify({type:'offer', offer: data.offer, name: socket.name}));
+                  socketIsCallee.send( JSON.stringify({type:'offer', offer: data.offer, name: socket.data.name}));
                 }
                 break;
             case 'answer':
@@ -68,7 +67,7 @@ io.on('connection', function(socket){
                  if( users[data.name] != null) {
                      socket.calledUser = data.name;
                      var socketIsCaller = users[data.name];
-                     socketIsCaller.send( JSON.stringify({type:'answer', answer: data.answer, name: socket.name }));
+                     socketIsCaller.send( JSON.stringify({type:'answer', answer: data.answer, name: socket.data.name }));
                  }
                  break;
             case 'candidate':

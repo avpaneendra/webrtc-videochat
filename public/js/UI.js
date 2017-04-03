@@ -5,8 +5,6 @@ window.mainrtc.UI = (function(){
 
     function initInterface(){
         var self = this;
-        self.userLoginInput = document.getElementById("userLoginInput");
-        self.userLoginBtn = document.getElementById("userLoginBtn");
         self.userNameRemoteInput = document.getElementById("userNameRemoteInput");
         self.userCallRemoteBtn = document.getElementById("userCallRemoteBtn");
         self.userHangUpBtn = document.getElementById("userHangUpBtn");
@@ -14,7 +12,6 @@ window.mainrtc.UI = (function(){
     }
 
     function listenersUI(){
-        this.userLoginBtn.addEventListener('click', userLoginHandler.bind(this));
         this.userCallRemoteBtn.addEventListener('click', userCallHandler.bind(this));
         this.userHangUpBtn.addEventListener('click', userHangUpHandler);
         document.querySelector("#userSelfieBtn").addEventListener("click", userScreenShotHandler.bind(this));
