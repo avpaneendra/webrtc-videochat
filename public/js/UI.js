@@ -33,11 +33,14 @@ window.mainrtc.UI = (function(){
             send(JSON.stringify({type: "leave"}));
     }
     function filterUserList(data){
+        var self = this;
         var index = data.list.indexOf(data.caller);
-        data.list.splice(index,1)
+        data.list.splice(index,1);
         data.list.forEach(function(user){
             console.log(user);
-        })
+        });
+        self.userList = data.list;
+        console.log(self.userList);
     }
     function userScreenShotHandler(event){
         this.screenShot();
