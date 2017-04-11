@@ -85,15 +85,16 @@ io.on('connection', function(socket){
             case 'users':
                 var userList = Array.from(userMap.values());
                 var caller = {[socket.data.uid]: socket.data.name};
-                socket.send(JSON.stringify({type:'users', list: userList, caller: caller }))
+                socket.send(JSON.stringify({type:'users', list: userList, caller: caller }));
                 break;
             default:
                 socket.send( JSON.stringify({type:'error', message: 'Unreckognised error ' + data.type}));
                 console.log('case default error');
         }
   });
+    /*send emitter for disconnect*/
   socket.on('disconnect', function(){
-      if(socket.data.name != null) {
+      if(socket.data.name) {
           var originalSocket = userMap.delete(socket);
           if(originalSocket) delete users[socket.data.name];
       }

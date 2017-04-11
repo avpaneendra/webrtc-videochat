@@ -5,6 +5,7 @@ window.mainrtc.UI = (function(){
 
     function initInterface(){
         var self = this;
+        self.userList = [];
         self.userNameRemoteInput = document.getElementById("userNameRemoteInput");
         self.userCallRemoteBtn = document.getElementById("userCallRemoteBtn");
         self.userHangUpBtn = document.getElementById("userHangUpBtn");
@@ -36,10 +37,13 @@ window.mainrtc.UI = (function(){
         var self = this;
         var index = data.list.indexOf(data.caller);
         data.list.splice(index,1);
-        data.list.forEach(function(user){
-            console.log(user);
+        self.userList = data.list.map(user => {
+            var key = Object.keys(user);
+            var id = Object.values(user);
+            return {name: name, id: id}
         });
-        self.userList = data.list;
+        //self.userList = data.list;
+        window.dispatchEvent(new CustomEvent('userList'));
         console.log(self.userList);
     }
     function userScreenShotHandler(event){
