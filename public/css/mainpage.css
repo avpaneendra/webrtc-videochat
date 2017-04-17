@@ -1,38 +1,64 @@
+label, button {
+    font-size: 0.9em;
+}
 body {
     font-family : 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
-.userLogin {
+/*header*/
+.header{
+    background: rgba(236, 240, 241, 1);
+    padding: 10px;
+}
+/*container*/
+.main-screen{
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+}
+.user-video {
     display: block;
     position: relative;
-    width: 100%;
     margin: 10px;
+    border: 1px solid gray;
 }
-.userVideo {
-    display: block;
-    position: relative;
-    width: 100%;
-    margin: 10px;
-}
-#localWrap {
+#local-wrap {
     position: absolute;
     top: 0;
     left: 0;
 }
-.userControl {
+#remote {
+    width: 100%;
+    height: auto;
+}
+#local {
+    width: 25%;
+    height: auto;
+}
+.user-control, .gallery {
     display: block;
     position: relative;
     width: 100%;
     margin: 10px;
 }
 /*user auth interface*/
+
 .auth .google{
     color: #FFFFFF;
     background: #3498DB;
     border-color: #3498DB;
     border-style: solid;
 }
+.auth label {
+    color: rgba(126, 130, 122, 1);
+}
 .auth .google:hover{
     background: rgba(52, 152, 219, 0.85);
     border-color: rgba(52, 152, 219, 0.85);
+}
+/*media*/
+@media screen and (min-width: 640px) {
+    .user-video {
+        width: 700px;
+    }
 }

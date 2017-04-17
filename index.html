@@ -26,31 +26,38 @@
 	</head>
 
 	<body>
-	<user-list>Loading...</user-list>
-		<div class="auth">
-				<label id="user_login"></label>
-				<button class="google" id="google_state" onclick="mainrtc.database.toggleAuth()">Sign In</button>
-                <label id="user_state"></label>
-		</div>
-        <div class="userList">
-        </div>
-
-		<div class="userVideo">
-
-				<video id="remote" style="width:40%;" autoplay></video>
-
-			<div id="localWrap">
-				<video id = "local" style="width:20%" muted autoplay></video>
+		<div class="header">
+			<div class="auth">
+					<label id="user-login"></label>
+					<button class="google" id="google-state" onclick="mainrtc.database.toggleAuth()">Sign In</button>
+					<label id="user-state"></label>
 			</div>
-			<canvas ></canvas>
 		</div>
-		<div class="userControl">
-			<input id="userNameRemoteInput" type="text" name="message" placeholder="Call to.."/>
-			<input id="userCallRemoteBtn" value="Call" type="submit" onclick="">
-			<input id="userHangUpBtn" value="Hang up" type="submit" onclick="">
-			<input id="userSelfieBtn" type="submit" value="Selfie" >
-		</div>
+		<div class="container">
+			<div class="main-screen">
+				<div class="user-video">
+					<video id="remote" autoplay></video>
+					<div id="local-wrap">
+						<video id = "local" muted autoplay></video>
+					</div>
 
+					<div class="user-control">
+						<input id="userNameRemoteInput" type="text" name="message" placeholder="Call to.."/>
+						<input id="userCallRemoteBtn" value="Call" type="submit" onclick="">
+						<input id="userHangUpBtn" value="Hang up" type="submit" onclick="">
+						<input id="userSelfieBtn" type="submit" value="Selfie" >
+					</div>
+				</div>
+				<div>
+					<user-list>Loading...</user-list>
+				</div>
+			</div>
+			<div class="gallery">
+				<canvas id="photo-canvas" ></canvas>
+			</div>
+
+
+		</div>
 		<script src="/js/UI.js"></script>
 		<script src="/js/connectionP2P.js"></script>
 
@@ -65,6 +72,7 @@
 				if (connectedUser) message.name = connectedUser;
 				socket.send(message);
 			}
+
 			function socketEventHandler(msg){
 				var json = mainrtc.socketTool.isJson(msg);
 				var data;
@@ -74,8 +82,8 @@
 				switch(data.type){
 					case 'login':
 						mainrtc.connectionP2P.startConnection();
-                        send(JSON.stringify({type: "users"}));
-                        /*Should be refactored*/
+                        mainrtc.UI.requestUsers();
+						/*Should be refactored*/
 						//onLogin(data);
 						break;
 					case 'candidate':
@@ -104,6 +112,7 @@
 					mainrtc.connectionP2P.startConnection();
 				}
 			}
+
 		</script>
 	</body>
 </html>

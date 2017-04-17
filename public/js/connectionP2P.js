@@ -91,16 +91,16 @@ window.mainrtc.connectionP2P = (function(){
 	}
 	function signOut(){
 	    if(connectionIceState() != "new") {
-	        console.log("signOut(), state")
+	        console.log("signOut(), state");
 	        this.onLeave();
-            send(JSON.stringify({type: "leave", name: userLogin}));
 	    }
+		send(JSON.stringify({type: "leave", name: userLogin, signOut: true}));
 		stream.getTracks().forEach(function(track){track.stop()});
-		console.log("signOut(), end", localConnection.signalingState);
+		console.log("signOut", localConnection.signalingState);
 	}
 	function connectionIceListener(){
 	    localConnection.oniceconnectionstatechange = function () {
-	        document.getElementById("user_state").textContent  = localConnection.iceConnectionState;
+	        document.getElementById("user-state").textContent  = localConnection.iceConnectionState;
         }
     }
     function connectionIceState(){

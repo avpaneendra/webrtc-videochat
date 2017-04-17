@@ -31,27 +31,31 @@ window.mainrtc.UI = (function(){
     }
     function userHangUpHandler(event){
             mainrtc.connectionP2P.onLeave();
-            send(JSON.stringify({type: "leave"}));
+            send(JSON.stringify({type: "leave", signOut: false}));
     }
     function filterUserList(data){
         var self = this;
-        var index = data.list.indexOf(data.caller);
-        data.list.splice(index,1);
-        self.userList = data.list.map(user => {
+        var userList = data.list.filter( user => {if(Object.keys(user)[0] !== data.caller.uid ) return user});
+        self.userList = userList.map(user => {
             var key = Object.keys(user);
             var id = Object.values(user);
-            return {name: name, id: id}
+            return {name: key, id: id}
         });
         //self.userList = data.list;
         window.dispatchEvent(new CustomEvent('userList'));
         console.log(self.userList);
+    }
+    function removeUserList(){
+        clearInterval(mainrtc.UI.intervalUserList);
+        mainrtc.UI.userList = [];
+        window.dispatchEvent(new CustomEvent('userList'));
     }
     function userScreenShotHandler(event){
         this.screenShot();
     }
     function screenShot(){
         var video = document.querySelector("#local"),
-            canvas = document.querySelector("canvas");
+            canvas = document.querySelector("#photo-canvas");
         console.log(video.videoHeight  + " " + video.videoWidth);
         canvas.height = video.videoHeight;
         canvas.width = video.videoWidth;
@@ -59,10 +63,17 @@ window.mainrtc.UI = (function(){
         var context = canvas.getContext("2d");
         context.drawImage(video,0,0);
     }
+    function requestUsers(){
+        this.intervalUserList = setInterval(function(){
+            send(JSON.stringify({type: "users"}));
+        },10000);
+    }
     return {
         'initInterface' : initInterface,
         'filterUserList' : filterUserList,
-        'screenShot' : screenShot
+        'screenShot' : screenShot,
+        'requestUsers' : requestUsers,
+        'removeUserList' : removeUserList
     }
 
 })();

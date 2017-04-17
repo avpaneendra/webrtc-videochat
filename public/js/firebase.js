@@ -23,19 +23,20 @@ window.mainrtc.database = (function(){
                 console.error(error);
             });
         } else {
-            firebase.auth().signOut();
+            mainrtc.UI.removeUserList();
             mainrtc.connectionP2P.signOut();
+            firebase.auth().signOut();
         }
     }
     function userStateChanged(user) {
         if (user) {
-            document.getElementById('google_state').textContent = 'Sign Out';
-            document.getElementById('user_login').textContent = user.displayName;
+            document.getElementById('google-state').textContent = 'Sign Out';
+            document.getElementById('user-login').textContent = user.displayName;
             send(JSON.stringify({type: "login", name: user.displayName, uid: user.uid}));
             console.log("onAuthStateChanged",user.displayName);
         } else {
-            document.getElementById('google_state').textContent = 'Sign In';
-            document.getElementById('user_login').textContent = "";
+            document.getElementById('google-state').textContent = 'Sign In';
+            document.getElementById('user-login').textContent = "";
         }
     }
     return{

@@ -51,8 +51,9 @@ io.on('connection', function(socket){
                     userMap.set(socket, {[socket.data.uid]: socket.data.name});
                     users[socket.data.name] = socket;
                     socket.send( JSON.stringify({type:'login', success: true, name: data.name}));
+                    console.log(socket.data.name);
                 }
-                //console.log('case login map size: ');
+
                 break;
             case 'offer':
                 console.log("Sending offer to", data.name);
@@ -81,10 +82,15 @@ io.on('connection', function(socket){
                 if(disconnectSocket != null){
                     disconnectSocket.send( JSON.stringify({type:'leave'}));
                 }
+                if(data.signOut) {
+                    userMap.delete(socket);
+                    delete users[socket.data.name];
+                    console.log("Sign out: ", data.name );
+                }
                 break;
             case 'users':
                 var userList = Array.from(userMap.values());
-                var caller = {[socket.data.uid]: socket.data.name};
+                var caller = {uid: socket.data.uid};
                 socket.send(JSON.stringify({type:'users', list: userList, caller: caller }));
                 break;
             default:
@@ -92,15 +98,13 @@ io.on('connection', function(socket){
                 console.log('case default error');
         }
   });
-    /*send emitter for disconnect*/
   socket.on('disconnect', function(){
-      if(socket.data.name) {
-          var originalSocket = userMap.delete(socket);
-          if(originalSocket) delete users[socket.data.name];
-      }
       var disconnectSocket = users[socket.calledUser];
-      if(disconnectSocket != null){
-          disconnectSocket.send( JSON.stringify({type:'leave'}));
+      if(disconnectSocket != null) disconnectSocket.send( JSON.stringify({type:'leave'}));
+
+      if(socket.data.hasOwnProperty('name')) {
+          userMap.delete(socket);
+          delete users[socket.data.name];
       }
       console.log('client disconnect');
   });

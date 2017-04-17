@@ -1,4 +1,4 @@
-
+const path = require('path');
 
 module.exports = {
     entry: {
@@ -9,15 +9,23 @@ module.exports = {
         filename: "./public/[name].js"
     },
     module: {
-        loaders: [
-            {
-                test: /\.ts$/,
-                loader: "ts-loader",
-                exclude: /node_modules/
-            }
-        ]
+		    rules: [
+					{
+						test: /\.css$/,
+						use: [ 'style-loader', 'css-loader' ],
+						
+					},
+						  
+					{
+						test: /\.ts$/,
+						use: 'ts-loader',
+						exclude: /node_modules/
+					}
+        
+				]	
+
     },
     resolve: {
-        extensions: [".js", ".ts"]
+        extensions: [".js", ".ts", ".css"]
     }
 }
