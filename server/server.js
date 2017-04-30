@@ -71,6 +71,13 @@ io.on('connection', function(socket){
                      socketIsCaller.send( JSON.stringify({type:'answer', answer: data.answer, name: socket.data.name }));
                  }
                  break;
+            case 'reject':
+                console.log("Sending refuse to", data.name);
+                if( users[data.name] != null) {
+                    var socketIsCaller = users[data.name];
+                    delete socketIsCaller.calledUser;
+                    socketIsCaller.send( JSON.stringify({type:'refuse', name: socket.data.name }));
+                }
             case 'candidate':
                 if(users[data.name] != null){
                     console.log("data.candidate");

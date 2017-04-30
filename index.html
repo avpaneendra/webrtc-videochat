@@ -95,6 +95,9 @@
 					case 'answer':
 						mainrtc.connectionP2P.onAnswer(data.answer);
 						break;
+					case 'reject':
+						mainrtc.connectionP2P.onLeave();
+						break;
 					case 'leave':
 						mainrtc.connectionP2P.onLeave();
 						break;

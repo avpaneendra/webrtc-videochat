@@ -29,6 +29,10 @@ window.mainrtc.UI = (function(){
         if(inputCorrect) mainrtc.connectionP2P.startPeerConnection(userNameRemote);
         else console.log("error remote user name");
     }
+    function userCall(name){
+        if(name != null) mainrtc.connectionP2P.startPeerConnection(name);
+
+    }
     function userHangUpHandler(event){
             mainrtc.connectionP2P.onLeave();
             send(JSON.stringify({type: "leave", signOut: false}));
@@ -37,13 +41,13 @@ window.mainrtc.UI = (function(){
         var self = this;
         var userList = data.list.filter( user => {if(Object.keys(user)[0] !== data.caller.uid ) return user});
         self.userList = userList.map(user => {
-            var key = Object.keys(user);
-            var id = Object.values(user);
-            return {name: key, id: id}
+            var id = Object.keys(user);
+            var name = Object.values(user);
+            return {name: name, id: id}
         });
         //self.userList = data.list;
         window.dispatchEvent(new CustomEvent('userList'));
-        console.log(self.userList);
+        //console.log(self.userList);
     }
     function removeUserList(){
         clearInterval(mainrtc.UI.intervalUserList);
@@ -73,7 +77,8 @@ window.mainrtc.UI = (function(){
         'filterUserList' : filterUserList,
         'screenShot' : screenShot,
         'requestUsers' : requestUsers,
-        'removeUserList' : removeUserList
+        'removeUserList' : removeUserList,
+        'userCall' : userCall
     }
 
 })();

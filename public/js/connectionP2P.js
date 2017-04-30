@@ -31,7 +31,8 @@ window.mainrtc.connectionP2P = (function(){
 
 		//entry point for WEBRTC API (initialize a connection, connect to peers, and attach media stream)
 		localConnection = new RTCPeerConnection(configuration);
-        console.log(connectionIceState())
+
+        console.log("connectionIceState: ",connectionIceState());
         connectionIceListener();
 		//Addstream
 		localConnection.addStream(stream);
@@ -64,7 +65,11 @@ window.mainrtc.connectionP2P = (function(){
 		localConnection.addIceCandidate(new RTCIceCandidate(candidate));
 	}
 	function onOffer(offer, caller) {
-		console.log(offer);
+		if(connectionIceState() === "connected") {
+			send(JSON.stringify({type: "reject", name: caller}));
+			return console.info("Blocked income call from: ",caller);
+		}
+		console.info("Income offer",offer);
 		connectedUser = caller;
 		localConnection.setRemoteDescription(new RTCSessionDescription(offer));
 
@@ -73,21 +78,22 @@ window.mainrtc.connectionP2P = (function(){
 			localConnection.setLocalDescription(answer);
 			send(JSON.stringify({type: 'answer', answer: answer, name: caller}));
 		}).catch(function(event){
-			console.log(event + " create Offer error");
+			console.error(event + " create Offer error");
 		});
 	}
 	function onAnswer(answer){
 		localConnection.setRemoteDescription(new RTCSessionDescription(answer));
-	};
+	}
 	function onLeave(){
 		connectedUser = null;
-		videoRemote.src = null;
+		/*wrong! could be not exist*/
+		if(videoRemote.src != null) videoRemote.src = null;
 		localConnection.close();
 		localConnection.onicecandidate = null;
 		localConnection.onaddstream = null;
         /*Setup connection for new call*/
 		this.setupPeerConnection(stream);
-		console.log("onLeave() ,browser disconnect");
+		console.log("onLeave, browser disconnect");
 	}
 	function signOut(){
 	    if(connectionIceState() != "new") {
@@ -100,7 +106,11 @@ window.mainrtc.connectionP2P = (function(){
 	}
 	function connectionIceListener(){
 	    localConnection.oniceconnectionstatechange = function () {
+	    	mainrtc.connectionP2P.iceState = localConnection.iceConnectionState;
 	        document.getElementById("user-state").textContent  = localConnection.iceConnectionState;
+			console.log("iceListener",
+				localConnection.iceConnectionState,
+				localConnection.signalingState);
         }
     }
     function connectionIceState(){
