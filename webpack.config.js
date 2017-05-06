@@ -1,5 +1,6 @@
 const path = require('path');
 
+
 module.exports = {
     entry: {
         app: "./dev/src/boot.ts",
@@ -18,7 +19,7 @@ module.exports = {
 						  
 					{
 						test: /\.ts$/,
-						use: 'ts-loader',
+						use: 'awesome-typescript-loader',
 						exclude: /node_modules/
 					}
         

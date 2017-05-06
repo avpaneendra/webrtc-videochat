@@ -1,4 +1,3 @@
-"use strict";
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -8,10 +7,10 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-const core_1 = require('angular2/core');
-require('./user-component.css');
-const popover_component_1 = require('./popover/popover-component');
-let UserComponent = class UserComponent {
+import { Component, Input, HostListener } from 'angular2/core';
+import './user-component.css';
+import { PopOver } from './popover/popover-component';
+export let UserComponent = class UserComponent {
     over() {
         this.popOver = true;
     }
@@ -23,23 +22,23 @@ let UserComponent = class UserComponent {
     }
 };
 __decorate([
-    core_1.Input(), 
+    Input(), 
     __metadata('design:type', Object)
 ], UserComponent.prototype, "winRef", void 0);
 __decorate([
-    core_1.HostListener('mouseover'), 
+    HostListener('mouseover'), 
     __metadata('design:type', Function), 
     __metadata('design:paramtypes', []), 
     __metadata('design:returntype', void 0)
 ], UserComponent.prototype, "over", null);
 __decorate([
-    core_1.HostListener('mouseleave'), 
+    HostListener('mouseleave'), 
     __metadata('design:type', Function), 
     __metadata('design:paramtypes', []), 
     __metadata('design:returntype', void 0)
 ], UserComponent.prototype, "out", null);
 UserComponent = __decorate([
-    core_1.Component({
+    Component({
         selector: "user",
         template: `
         <div class="user-root">
@@ -57,9 +56,8 @@ UserComponent = __decorate([
                 </div>
             </div>
         </div>`,
-        directives: [popover_component_1.PopOver],
+        directives: [PopOver],
         inputs: ['user']
     }), 
     __metadata('design:paramtypes', [])
 ], UserComponent);
-exports.UserComponent = UserComponent;

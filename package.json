@@ -30,7 +30,9 @@
     "url": "https://github.com/timatrue/webrtc.git"
   },
   "devDependencies": {
+    "awesome-typescript-loader": "^3.1.3",
     "css-loader": "^0.28.0",
-    "style-loader": "^0.16.1"
+    "style-loader": "^0.16.1",
+    "webpack": "^2.5.0"
   }
 }
