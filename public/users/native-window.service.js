@@ -22,4 +22,3 @@ WindowRef = __decorate([
     __metadata('design:paramtypes', [])
 ], WindowRef);
 exports.WindowRef = WindowRef;
-//# sourceMappingURL=native-window.service.js.map

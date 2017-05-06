@@ -6,4 +6,3 @@ class UserInstance {
     }
 }
 exports.UserInstance = UserInstance;
-//# sourceMappingURL=user-instance.js.map

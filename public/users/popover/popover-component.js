@@ -41,9 +41,8 @@ __decorate([
 PopOver = __decorate([
     core_1.Component({
         selector: 'pop-over',
-        template: `<div *ngIf="popOver || popThis" class="user-details">Pop Over Element</div>`
+        template: `<div *ngIf="popOver || popThis" class="user-details">Detailed information</div>`
     }), 
     __metadata('design:paramtypes', [])
 ], PopOver);
 exports.PopOver = PopOver;
-//# sourceMappingURL=popover-component.js.map

@@ -41,4 +41,3 @@ AppComponent = __decorate([
     __metadata('design:paramtypes', [native_window_service_1.WindowRef])
 ], AppComponent);
 exports.AppComponent = AppComponent;
-//# sourceMappingURL=app.component.js.map

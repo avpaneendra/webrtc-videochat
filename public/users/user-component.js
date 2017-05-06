@@ -19,7 +19,6 @@ let UserComponent = class UserComponent {
         setTimeout(() => this.popOver = false, 2000);
     }
     callUser() {
-        console.log("calluser", this.winRef.nativeWindow.mainrtc);
         this.winRef.nativeWindow.mainrtc.UI.userCall(this.user.name);
     }
 };
@@ -64,4 +63,3 @@ UserComponent = __decorate([
     __metadata('design:paramtypes', [])
 ], UserComponent);
 exports.UserComponent = UserComponent;
-//# sourceMappingURL=user-component.js.map
