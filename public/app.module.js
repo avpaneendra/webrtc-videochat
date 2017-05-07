@@ -7,16 +7,20 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-import { Injectable } from '@angular/core';
-function _window() {
-    return window;
-}
-export let WindowRef = class WindowRef {
-    get nativeWindow() {
-        return _window();
-    }
+import { NgModule } from "@angular/core";
+import { BrowserModule } from "@angular/platform-browser";
+import { AppComponent } from './app.component';
+import { UserComponent } from './users/user-component';
+import { PopOver } from './users/popover/popover-component';
+import { WindowRef } from "./users/native-window.service";
+export let AppModule = class AppModule {
 };
-WindowRef = __decorate([
-    Injectable(), 
+AppModule = __decorate([
+    NgModule({
+        imports: [BrowserModule],
+        declarations: [AppComponent, UserComponent, PopOver],
+        bootstrap: [AppComponent],
+        providers: [WindowRef]
+    }), 
     __metadata('design:paramtypes', [])
-], WindowRef);
+], AppModule);

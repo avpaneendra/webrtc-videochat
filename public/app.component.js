@@ -7,8 +7,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-import { Component, HostListener } from 'angular2/core';
-import { UserComponent } from './users/user-component';
+import { Component, HostListener } from '@angular/core';
 import { UserInstance } from "./users/user-instance";
 import { WindowRef } from "./users/native-window.service";
 import "./app.component.css";
@@ -33,9 +32,9 @@ AppComponent = __decorate([
     Component({
         selector: 'user-list',
         template: `<div class="users-online"> Online:</div>
-        <user *ngFor="let user of userList" [winRef]="winRef" [user]="user"></user>`,
-        directives: [UserComponent],
-        providers: [WindowRef]
+        <user *ngFor="let user of userList" [winRef]="winRef" [user]="user"></user>`
     }), 
     __metadata('design:paramtypes', [WindowRef])
 ], AppComponent);
+//directives: [UserComponent],
+//providers: [WindowRef] 
